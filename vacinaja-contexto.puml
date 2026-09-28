@@ -1,0 +1,32 @@
+@startuml vacinaja-contexto
+!include <C4/C4_Context>
+
+LAYOUT_WITH_LEGEND()
+title Diagrama C4 - Nível 1 (Contexto): Sistema VacinaJá
+
+Person(cidadao, "Cidadão", "Agenda dia, horário e unidade de saúde para se vacinar, pelo aplicativo ou navegador.")
+Person(profissional, "Profissional de saúde", "Atua na unidade de saúde e confirma a aplicação da dose no dia da vacinação.")
+Person(gestor, "Gestor da Secretaria Municipal de Saúde", "Consulta painéis de cobertura vacinal por bairro.")
+
+System(vacinaja, "VacinaJá", "Sistema de agendamento de vacinação da Secretaria Municipal de Saúde.")
+
+System_Ext(govbr, "gov.br", "Conta única de autenticação do cidadão.")
+System_Ext(rnds, "RNDS - Rede Nacional de Dados em Saúde", "Ministério da Saúde. Recebe o registro das doses aplicadas.")
+System_Ext(meususs, "Meu SUS Digital", "Aplicativo do Ministério da Saúde com a carteira de vacinação do cidadão.")
+System_Ext(mensageria, "Plataforma de mensageria", "Serviço contratado para envio de SMS e WhatsApp.")
+System_Ext(cnes, "CNES", "Cadastro Nacional de Estabelecimentos de Saúde: unidades e profissionais habilitados.")
+
+Rel(cidadao, vacinaja, "Agenda vacinação (dia, horário e unidade)", "HTTPS, app ou navegador")
+Rel(profissional, vacinaja, "Confirma a aplicação da dose", "HTTPS")
+Rel(gestor, vacinaja, "Consulta painéis de cobertura vacinal por bairro", "HTTPS")
+
+Rel(vacinaja, govbr, "Autentica o cidadão", "OAuth 2.0 / OpenID Connect")
+Rel(vacinaja, rnds, "Envia o registro da dose aplicada", "HTTPS/REST")
+Rel(vacinaja, mensageria, "Solicita envio de lembrete um dia antes do agendamento", "HTTPS/REST")
+Rel(vacinaja, cnes, "Obtém unidades de saúde e profissionais habilitados", "HTTPS/REST")
+
+Rel(rnds, meususs, "Disponibiliza a dose na carteira de vacinação")
+Rel(mensageria, cidadao, "Entrega o lembrete", "SMS / WhatsApp")
+Rel(cidadao, meususs, "Consulta a carteira de vacinação", "App")
+
+@enduml
